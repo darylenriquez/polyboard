@@ -1,0 +1,42 @@
+<div class="columns is-mobile">
+  <div class="column is-4 is-offset-4">
+    <h4 class="title is-3 has-text-left">Signup</h4>
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+
+    <%= f.label :username, nil, class: 'label' %>
+    <p class="control has-icon has-icon-right">
+      <%= f.text_field :username, autofocus: true, class: 'input is-success' %>
+    </p>
+
+    <%= f.label :password, nil, class: 'label' %>
+    <p class="control has-icon has-icon-right">
+      <%= f.password_field :password, autocomplete: "off", class: 'input is-danger' %>
+      <% if @minimum_password_length %>
+      <em></em>
+      <span class="help is-success">(<%= @minimum_password_length %> characters minimum)</span>
+      <% end %>
+    </p>
+
+    <%= f.label :password_confirmation, nil, class: 'label' %>
+    <p class="control has-icon has-icon-right">
+      <%= f.password_field :password_confirmation, autocomplete: "off", class: 'input is-danger' %>
+      <% if @minimum_password_length %>
+      <em></em>
+      <span class="help is-success">(<%= @minimum_password_length %> characters minimum)</span>
+      <% end %>
+    </p>
+
+    <%= f.label :avatar, nil, class: 'label' %>
+    <p class="control has-icon has-icon-right">
+      <%= f.file_field :avatar %>
+    </p>
+
+    <p class="has-text-right">
+      <%= render "devise/shared/links" %>
+      <%= f.submit "Sign up", class: "button is-primary" %>
+    </p>
+    <% end %>
+  </div>
+</div>
+
+

@@ -1,0 +1,20 @@
+<nav class="nav pure-content-header is-light-mint">
+  <div class="nav-left">
+    <a class="nav-item is-brand" href="/">PolyBoard</a>
+  </div>
+
+  <span class="nav-toggle">
+    <span></span>
+    <span></span>
+    <span></span>
+  </span>
+
+  <div class="nav-right nav-menu">
+    <%= link_to mailboxes_path, class: "nav-item #{nav_class(:mailboxes)}" do %>
+    <i class="fa fa-laptop" aria-hidden="true"></i>&nbsp;Mailboxes
+    <% end %>
+    <%= link_to destroy_user_session_path, method: :delete, class: 'nav-item' do %>
+    <i class="fa fa-power-off" aria-hidden="true"></i>&nbsp;Logout
+    <% end %>
+  </div>
+</nav>

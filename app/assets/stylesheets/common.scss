@@ -1,0 +1,57 @@
+$mint-dark-bg: #37BC9B;
+$mint-light-bg: #48CFAD;
+$mint-dark-color: white;
+$mint-light-color: white;
+$mint-dark-color-selected: black;
+$mint-light-color-selected: black;
+$error-dark: #DA4453;
+
+.hero {
+  &.is-dark-mint {
+    background: $mint-dark-bg;
+    color: $mint-dark-color;
+
+    *:not(input, .notification) {
+      color: $mint-dark-color;
+    }
+  }
+}
+
+.nav {
+  &.is-light-mint {
+    background: $mint-light-bg;
+    color: $mint-light-color;
+    
+    .nav-left, .nav-toggle, .nav-right {
+      a {
+        color: $mint-light-color;
+        
+        &:hover {
+          color: $mint-dark-color-selected;
+        }
+      }
+      
+      .nav-item {
+        &.is-active {
+          background: $mint-dark-bg;
+        }
+      }
+    }
+  }
+}
+
+.tabs {
+  .is-right {
+    padding-right: 10px;
+  }
+}
+
+.padded {
+  padding: 10px;
+}
+
+.field_with_errors {
+  input, textarea {
+    border: 1px solid $error-dark;
+  }
+}

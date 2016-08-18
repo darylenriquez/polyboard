@@ -1,0 +1,74 @@
+<%= render partial: 'tabs' %>
+
+<div class="columns padded">
+  <div class="column is-8 is-offset-2 ">
+    <div class="card is-fullwidth">
+      <header class="card-header">
+        <h3 class="card-header-title"><%= @mailbox.name %></h3>
+        <%= link_to edit_mailbox_path(@mailbox.id), class: "card-header-icon", title: "Edit Mailbox" do %>
+        <i class="fa fa-edit"></i>
+        <% end %>
+      </header>
+      <% unless notice.blank? %>
+      <div class="card-content is-info">
+        <p><%= notice %></p>
+      </div>
+      <% end %>
+      <div class="card-image">
+        <figure class="image">
+          <%= image_tag @mailbox.cover_photo.url %>
+        </figure>
+      </div>
+      <div class="card-content">
+        <div class="content">
+          <%= raw @mailbox.description.html_safe %>
+          <br />
+          <small>Date Created: <%= @mailbox.created_at %></small>
+          <hr />
+          <h5 class="subtitle">
+            Emails Connected
+            <%= link_to '/auth/google_oauth2', class: "is-pulled-right button", title: "Connect new email" do %>
+            <i class="fa fa-google" aria-hidden="true"></i>&nbsp;Connect GMAIL Account
+            <% end %>
+          </h5>
+          <% if @mailbox.tokens.count.zero? %>
+          <p>No Emails are connected yet.</p>
+          <% else %>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Added by</th>
+                <th>Date Added</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tfoot>
+              <tr>
+                <th>Email</th>
+                <th>Added by</th>
+                <th>Date Added</th>
+                <th></th>
+              </tr>
+            </tfoot>
+            <tbody>
+              <% @mailbox.tokens.each do |token| %>
+              <tr>
+                <td><%= token.email %></td>
+                <td><%= token.user.try(:username) %></td>
+                <td class="is-icon"><%= token.created_at %></td>
+                <td>
+                  <%= link_to mailbox_mail_path(mailbox_id: @mailbox.id, id: token.id), class: "button" do %>
+                  <i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;View Emails
+                  <% end %>
+                </td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

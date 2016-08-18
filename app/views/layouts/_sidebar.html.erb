@@ -1,0 +1,10 @@
+<aside class="menu">
+  <p class="menu-label">
+    Mailboxes
+  </p>
+  <ul class="menu-list">
+    <% mailboxes.each do |mailbox| %>
+    <li><%= link_to mailbox[0], mailbox_path(mailbox[1]) %></li>
+    <% end %>
+  </ul>
+</aside>

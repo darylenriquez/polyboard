@@ -1,0 +1,17 @@
+<section class="index section is-medium">
+  <div class="container">
+    <p class="title">Get started</p>
+    <div class="hero-buttons">
+      <%= link_to new_mailbox_path, class: "button is-info is-large" do %>
+      <span class="icon is-medium"><i class="fa fa-laptop"></i></span> <span>Add <strong>Mailbox</strong></span>
+      <% end %>
+      <%= link_to mailboxes_path, class: "button is-dark is-large" do %>
+      <span class="icon is-medium"><i class="fa fa-laptop"></i></span> <span>View <strong>Mailboxes</strong></span>
+      <% end %>
+      <p><strong>What are mailboxes?</strong> Mailboxes are simply categories. <strong>What can you do with a mailbox?</strong> Each mailbox can connect to multiple gmail accounts. In each account, all users can view emails.</p>
+    </div>
+    <p><strong>Note:</strong> This system can connect gmail accounts and retrieve the first 100 emails only. It can also compose replies and download attchments.</p>
+    <p><strong>Note:</strong> Please make sure to set environment variables. Most importantly the CLIENT_ID and CLIENT_SECRET</p>
+    <p><strong>Note:</strong> Please make sure to also set the google development console the callback link.</p>
+  </div>
+</section>

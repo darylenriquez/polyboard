@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Polyboard</title>
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag    'devise', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'devise', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+    
+    <section class="hero is-fullheight is-dark-mint">
+      <div class="hero-head">
+        <div class="container">
+          <div class="notification-messages">
+            <% unless notice.blank? %>
+            <div class="notification is-info">
+              <button class="delete"></button>
+              <%= notice %>
+            </div>
+            <% end %>
+            <% unless alert.blank? %>
+            <div class="notification is-warning">
+              <button class="delete"></button>
+              <%= alert %>
+            </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-body">
+        <div class="container">
+          <%= yield %>
+        </div>
+      </div>
+
+      <div class="hero-foot">
+        <div class="container">
+          <div class="tabs is-centered">
+            
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </body>
+</html>

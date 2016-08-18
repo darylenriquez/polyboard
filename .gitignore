@@ -1,0 +1,6 @@
+tmp/
+public/system/mailboxes/
+.byebug_history
+log/*
+log/development.log
+.DS_Store

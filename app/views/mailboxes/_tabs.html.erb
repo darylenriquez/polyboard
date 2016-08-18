@@ -1,0 +1,14 @@
+<div class="tabs">
+  <ul class="is-left">
+    <li class="<%= tab_class(:index) %>">
+      <%= link_to mailboxes_path do %>
+      <i class="fa fa-bars fa-1" aria-hidden='true'></i>&nbsp;Mailboxes
+      <% end %>
+    </li>
+    <li class="<%= tab_class(:new) %>">
+      <%= link_to new_mailbox_path do %>
+      <i class="fa fa-laptop fa-1" aria-hidden='true'></i>&nbsp;Add Mailbox
+      <% end %>
+    </li>
+  </ul>
+</div>

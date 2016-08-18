@@ -1,0 +1,35 @@
+default: &default
+  adapter: mysql2
+  pool: 5
+  timeout: 5000
+
+development:
+  <<: *default
+  encoding: utf8
+  database: polyboard_development
+  username: root
+  password:
+  socket: /tmp/mysql.sock
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test:
+  <<: *default
+  encoding: utf8
+  database: polyboard_test
+  username: root
+  password:
+  socket: /tmp/mysql.sock
+
+production:
+  <<: *default
+  host: <%= ENV["DB_HOST"] %>
+  port: '<%= ENV["DB_PORT"] %>'
+  encoding: utf8mb4
+  charset: utf8mb4
+  collation: utf8mb4_general_ci
+  database: polyboard_production
+  username: <%= ENV["DB_USER"] %>
+  password: '<%= ENV["DB_PW"] %>'
+  socket: /var/lib/mysql/mysql.sock

@@ -1,0 +1,30 @@
+<div class="columns is-mobile">
+  <div class="column is-2 is-offset-5">
+    <h4 class="title is-3 has-text-centered">Login</h4>
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+
+    <p class="control has-icon">
+      <%= f.text_field :username, autofocus: true, class: 'input', placeholder: 'username' %>
+      <i class="fa fa-envelope"></i>
+    </p>
+    <p class="control has-icon">
+      <%= f.password_field :password, autofocus: 'off', class: 'input', placeholder: 'password' %>
+      <i class="fa fa-lock"></i>
+    </p>
+    <% if devise_mapping.rememberable? -%>
+    <p class="has-text-right">
+      <label class="checkbox">
+        <%= f.check_box :remember_me %>
+        <%= f.label :remember_me %>
+      </label>
+    </p>
+    <% end -%>
+    <p class="has-text-right">
+      <%= render "devise/shared/links" %>
+      <%= f.submit "Log in", class: "button is-success" %>
+    </p>
+    <% end %>
+  </div>
+</div>
+
+

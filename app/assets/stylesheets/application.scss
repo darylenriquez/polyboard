@@ -1,0 +1,122 @@
+@import "font-awesome-sprockets";
+@import "font-awesome";
+@import "bulma";
+@import "common";
+
+html, body, .pure-content {
+  height: 100%;
+}
+
+.pure-content {
+  min-width: 800px;
+}
+
+.pure-content-header {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 50px;
+  top: 0;
+}
+
+.pure-content-sidebar {
+  position: fixed;
+  top: 50px;
+  bottom: 0;
+  background: #434A54;
+  width: 16.8%!important;
+  min-width: 200px!important;
+}
+
+.pure-content-main {
+  position: relative;
+  top: 50px;
+  margin-top: 10px;
+  margin-left: 16.5%!important;
+  padding-left: 0;
+  position: relative;
+  border-bottom: 1px solid #d3d6db;
+  min-width: 600px!important;
+}
+
+.pure-content-body {
+  min-height: 90%;;
+}
+
+.index {
+  background: none!important;
+}
+
+.messages-box {
+  float: left;
+  width: 30%;
+  overflow: hidden;
+  height: 100%;
+  overflow-y: scroll;
+  margin: 0;
+  border-right: thin solid #d3d6db;
+
+  .media {
+    padding: 5px;
+  }
+}
+
+.message-tabs {
+  margin: 0;
+}
+
+.divided {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 45px;
+  padding-top: 2px;
+}
+
+.message-content {
+  float: left;
+  height: 100%;
+  width: 69%;
+  position: relative;
+  
+  .section {
+    height: 100%;
+  }
+  
+  .message-content-detail {
+    border-bottom: thin solid #d3d6db;
+    padding: 2px;
+
+    .column {
+      .heading {
+        text-transform: none;
+      }
+    }
+  }
+  
+  .messages {
+    position: absolute;
+    top: 90px;
+    bottom: 0;
+    overflow: hidden;
+    overflow-y: scroll;
+    left: 0;
+    right: 0px;
+    
+    .reply-pane {
+      padding: 5px;
+    }
+  }
+  
+  h1.title {
+    padding: 5px;
+    margin-bottom: 8px;
+    overflow: hidden;
+    height: 35px;
+  }
+}
+
+.gmail_quote {
+  display: none!important;
+}

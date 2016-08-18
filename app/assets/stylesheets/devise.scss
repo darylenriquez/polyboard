@@ -1,0 +1,11 @@
+@import "font-awesome-sprockets";
+@import "font-awesome";
+@import "bulma";
+@import "common";
+
+.notification-messages {
+  position: absolute;
+  top: 100px;
+  left: 50px;
+  right: 50px;
+}
