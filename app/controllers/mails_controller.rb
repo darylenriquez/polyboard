@@ -90,6 +90,5 @@ class MailsController < ApplicationController
 
     @gmail = Google::Apis::GmailV1::GmailService.new
     @gmail.authorization = @token.as_credential
-    byebug
   end
 end
