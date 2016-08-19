@@ -1,5 +1,37 @@
+# TODO: Implement ajax for speed
 class MailsController < ApplicationController
   before_filter :set_token_and_gmail
+
+  # TODO: Merge this with show
+  def search
+    @selected_thread  = {messages: [], headers: nil, labels: []}
+
+    @result = @gmail.list_user_messages('me', q: params[:search])
+    @items  = {}
+
+    @gmail.batch do |g|
+      unless params[:thread_id].blank?
+        g.get_user_message('me', params[:thread_id]) do | message, res |
+          @selected_thread[:headers] = message.payload.headers.inject({}){|r, h| r.merge(h.name => h.value)}
+          @selected_thread[:labels]  = message.label_ids
+
+          @selected_thread[:messages] = [message]
+        end
+      end
+
+      @result.messages.each do |m|
+        g.get_user_message('me', m.id, fields: "id,labelIds,payload/headers,snippet") do | message, res |
+          @items[m.id] = if message.blank?
+            {} # Sometimes this happens
+          else
+            headers = message.payload.headers.inject({}){|r, h| r.merge(h.name => h.value)}
+
+            { message_id: message.id, labels: message.label_ids, sender: headers["From"], snippet: message.snippet }
+          end
+        end
+      end
+    end
+  end
 
   def show
     @selected_thread  = {messages: [], headers: nil, labels: []}
@@ -14,7 +46,7 @@ class MailsController < ApplicationController
           @selected_thread[:messages] = threads.messages rescue []
         end
 
-        g.get_user_message('me', params[:thread_id], fields: "labelIds,payload/headers") do | message, res |
+        g.get_user_message('me', params[:thread_id]) do | message, res |
           @selected_thread[:headers] = message.payload.headers.inject({}){|r, h| r.merge(h.name => h.value)}
           @selected_thread[:labels]  = message.label_ids
         end
@@ -27,7 +59,7 @@ class MailsController < ApplicationController
           else
             headers = message.payload.headers.inject({}){|r, h| r.merge(h.name => h.value)}
 
-            { message_id: message.id, labels: message.label_ids, sender: headers["From"], snippet: message.snippet }
+            { message_id: message.id, labels: message.label_ids, sender: headers["From"], snippet: thread.snippet }
           end
         end
       end
@@ -49,7 +81,8 @@ class MailsController < ApplicationController
     https.use_ssl = true
     result = https.post("#{url.path}?access_token=#{@token.fresh_token}", body, head)
 
-    redirect_to action: :show, thread_id: mail_params[:thread_id], mailbox_id: params[:mailbox_id], id: @token.id
+    # redirect_to action: :show, thread_id: mail_params[:thread_id], mailbox_id: params[:mailbox_id], id: @token.id
+    redirect_to request.referer
   end
   
   def download

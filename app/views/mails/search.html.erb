@@ -8,18 +8,18 @@
 </div>
 <div class="divided">
   <div class="messages-box">
-    <% @threads.each do |thread| %>
-    <% if @items[thread.id].present? %>
-    <%= link_to mailbox_mail_path(id: @token.id, thread_id: thread.id), class: "media" do %>
+    <% @result.messages.each do |message| %>
+    <% if @items[message.id].present? %>
+    <%= link_to url_for(thread_id: message.id, search: params[:search]), class: "media" do %>
     <div class="media-content">
       <div class="content">
         <p>
-          <% email = (@items[thread.id][:sender][/<(.*?)>/m] || "" rescue "") %>
+          <% email = (@items[message.id][:sender][/<(.*?)>/m] || "" rescue "") %>
           <strong>
-            <%= sanitize @items[thread.id][:sender].tr("\"", '').gsub(email, "<small>#{email.tr('<', '').tr('>', '')}</small>"), tags: %w(small) rescue "" %>
+            <%= sanitize @items[message.id][:sender].tr("\"", '').gsub(email, "<small>#{email.tr('<', '').tr('>', '')}</small>"), tags: %w(small) rescue "" %>
           </strong>
           <br>
-          <%= @items[thread.id][:snippet] rescue "" %>
+          <%= @items[message.id][:snippet] rescue "" %>
         </p>
       </div>
     </div>
