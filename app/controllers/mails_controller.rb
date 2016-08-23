@@ -37,33 +37,29 @@ class MailsController < ApplicationController
 
   def show
     @selected_item  = {messages: [], headers: nil, labels: []}
-    @thread_result    = @gmail.list_user_threads('me')
+    @items          = {}
 
-    @threads  = @thread_result.threads
-    @items    = {}
+    
+    if request.xhr?
+      if params[:target] == 'MESSAGE'
+        retrieve_selected_message(@gmail)
+      elsif params[:target] == 'APPEND_LIST'
+        @thread_result  = @gmail.list_user_threads('me', max_results: MAXIMUM_THREAD, page_token: params[:next_page_token])
+        @threads        = @thread_result.threads
 
-    @gmail.batch do |g|
-      unless params[:thread_id].blank?
-        g.get_user_thread('me', params[:thread_id]) do | threads, res |
-          @selected_item[:messages] = threads.messages rescue []
+        @gmail.batch do |g|
+          retrieve_threads_info(g)
         end
-
-        g.get_user_message('me', params[:thread_id]) do | message, res |
-          @selected_item[:headers] = message.payload.headers.inject({}){|r, h| r.merge(h.name => h.value)}
-          @selected_item[:labels]  = message.label_ids
-        end
+      else
+        raise ActionController::BadRequest
       end
+    else
+      @thread_result  = @gmail.list_user_threads('me', max_results: MAXIMUM_THREAD)
+      @threads        = @thread_result.threads
 
-      @threads.each do |thread|
-        g.get_user_message('me', thread.id, fields: "id,labelIds,payload/headers,snippet") do | message, res |
-          @items[thread.id] = if message.blank?
-            {} # Sometimes this happens
-          else
-            headers = message.payload.headers.inject({}){|r, h| r.merge(h.name => h.value)}
-
-            { message_id: message.id, labels: message.label_ids, sender: headers["From"], snippet: thread.snippet }
-          end
-        end
+      @gmail.batch do |g|
+        retrieve_selected_message(g)
+        retrieve_threads_info(g)
       end
     end
   end
@@ -109,6 +105,39 @@ class MailsController < ApplicationController
   end
 
   private # ======================================================
+  def retrieve_selected_message(gmail)
+    unless params[:thread_id].blank?
+      gmail.get_user_thread('me', params[:thread_id]) do | threads, res |
+        @selected_item[:messages] = threads.messages rescue []
+      end
+
+      gmail.get_user_message('me', params[:thread_id]) do | message, res |
+        @selected_item[:headers] = message.payload.headers.inject({}){|r, h| r.merge(h.name => h.value)}
+        @selected_item[:labels]  = message.label_ids
+      end
+    end
+  end
+
+  def retrieve_threads_info(gmail)
+    @threads.each do |thread|
+      gmail.get_user_message('me', thread.id, fields: "id,labelIds,payload/headers,snippet") do | message, res |
+        @items[thread.id] = if message.blank?
+          {} # Sometimes this happens
+        else
+          headers = message.payload.headers.inject({}){|r, h| r.merge(h.name => h.value)}
+
+          {
+            message_id: message.id,
+                labels: message.label_ids,
+                sender: headers["From"],
+               snippet: thread.snippet,
+                  date: headers["Date"]
+          }
+        end
+      end
+    end
+  end
+
   def mail_params
     params.require(:message).permit(:thread_id, :message, :message_id, :subject, :references, :to, files: []) rescue {}
   end

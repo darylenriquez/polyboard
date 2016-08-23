@@ -1,16 +1,33 @@
-<% items.each do |thread_id, item| %>
-<%= link_to url_for(thread_id: thread_id, search: params[:search]), class: "media is-fullwidth padded" do %>
-<div class="media-content">
-  <div class="content">
-    <p>
-      <% email = (item[:sender][/<(.*?)>/m] || "" rescue "") %>
-      <strong>
-        <%= sanitize item[:sender].tr("\"", '').gsub(email, "<small>#{email.tr('<', '').tr('>', '')}</small>"), tags: %w(small) rescue "" %>
-      </strong>
-      <br>
-      <%= item[:snippet] rescue "" %>
-    </p>
+<nav class="panel sidebar-panel">
+  <p class="panel-tabs">
+    <%= link_to "All", mailbox_mail_path(mailbox_id: params[:mailbox_id], id: @token.id) %>
+    <%= link_to "Unread", mailbox_mail_path(mailbox_id: params[:mailbox_id], id: @token.id, search: "label:unread") %>
+    <%= link_to "Read", mailbox_mail_path(mailbox_id: params[:mailbox_id], id: @token.id, search: "label:read") %>
+    <%= link_to "Sent", mailbox_mail_path(mailbox_id: params[:mailbox_id], id: @token.id, search: "label:sent") %>
+  </p>
+  <div id="mail-links">
+    <% items.each do |thread_id, item| %>
+    <% unless item[:sender].blank? %>
+    <% classes = "panel-block is-fullwidth message #{label_class_name(item[:labels])} #{'is-active' if is_current(thread_id)}" %>
+    <% email = (item[:sender][/<(.*?)>/m] || "" rescue "") %>
+    <% show_link = url_for(thread_id: thread_id, search: params[:search], target: 'MESSAGE') %>
+
+    <%= link_to show_link, class: classes, remote: true, id: thread_id do %>
+    <strong>
+      <i class="fa fa-envelope<%= '-o' unless item[:labels].include?("UNREAD") %> icon is-small" aria-hidden="true"></i>
+      <%= sanitize item[:sender].tr("\"", '').gsub(email, "<small>#{email.tr('<>', '')}</small>"), tags: %w(small) rescue "" %>
+    </strong>
+    <p><%= item[:snippet] rescue "" %></p>
+    <small><%= item[:date] %></small>
+    <% end %>
+    <% end %>
+    <% end %>
+    <div class="panel-block" id="mail-paginator">
+      <% unless @thread_result.next_page_token.blank? %>
+      <%= link_to "Load More ... ", mailbox_mail_path(mailbox_id: params[:mailbox_id], id: @token.id, target: 'APPEND_LIST', next_page_token: @thread_result.next_page_token), class: 'button is-primary is-outlined is-fullwidth', remote: true %>
+      <% else %>
+      No More Items to Show
+      <% end %>
+    </div>
   </div>
-</div>
-<% end %>
-<% end %>
+</nav>

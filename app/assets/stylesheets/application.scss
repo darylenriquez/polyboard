@@ -89,3 +89,17 @@ iframe.is-fullwidth {
 .hero-head + nav.tabs {
   padding-top: 5px;
 }
+
+.sidebar-panel {
+  border: none;
+  border-radius: 0;
+  
+  .message {
+    border-radius: 0;
+    margin-bottom: 0;
+    
+    &.is-active {
+      border-right: thick solid #37BC9B;
+    }
+  }
+}

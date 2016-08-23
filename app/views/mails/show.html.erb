@@ -1,5 +1,5 @@
 <div class="columns is-gapless is-full-height has-border-top">
-  <div class="column is-4 is-full-height has-vertical-scroll has-border-right">
+  <div class="column is-4 is-full-height has-vertical-scroll has-border-right" id="threads-list">
     <%= render partial: "mails_list", locals: {items: @items} %>
   </div>
   <div class="column is-8 is-full-height" id="messages-pane">
@@ -8,10 +8,18 @@
 </div>
 
 <script>
-  $(function(){
-    var item  = $(".messages > .card:last");
+var scrollToTarget = function(){
+  var item  = $(".messages > .card:last");
+  
+  if(item.size > 0){
     var limit = item.offset().top - item.parent().offset().top - item.parent().scrollTop();
 
     $(".messages").animate({ scrollTop: limit}, 1000);
+  }
+}
+
+
+  $(function(){
+    scrollToTarget();
   });
 </script>
