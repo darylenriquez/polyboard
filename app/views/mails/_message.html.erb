@@ -1,0 +1,117 @@
+<div class="message-content is-full-height">
+  <% if selected_item[:headers].nil? %>
+  <section class="section is-medium">
+    <div class="container">
+      <h3 class="title is-2">
+        <span class="icon is-large"><i class="fa fa-hand-o-left" aria-hidden="true"></i></span> No Message Selected
+      </h3>
+      <h4 class="subtitle is-4">Select a message from the left pane to read it.</h4>
+    </div>
+  </section>
+  <% else %>
+  <div class="message-info padded">
+    <h5 class="title is-5">
+      <i class="fa fa-calendar" aria-hidden="true" title="<%= selected_item[:headers]["Date"] %>"></i>&nbsp;
+      <%= selected_item[:headers]["Subject"] %><small>&nbsp;(<%= selected_item[:headers]["Date"] %>)</small>
+    </h5>
+    <p>
+      <% users = [selected_item[:headers]["From"], selected_item[:headers]["To"], selected_item[:headers]["Cc"]].compact.join(" | ") %>
+      <i class="fa fa-users" aria-hidden="true" title="<%= users %>"></i>
+      <%= users %>
+    </p>
+  </div>
+  <div class="messages has-vertical-scroll is-full-height">
+    <% selected_item[:messages].each do |message| %>
+    <% headers  = headers_to_hash(message.payload.headers) %>
+    <% email    = (headers["From"][/<(.*?)>/m] || "" rescue "") %>
+
+    <div class="card is-fullwidth" id="message-<%= message.id %>">
+      <div class="card-content">
+        <div class="media">
+          <div class="media-content">
+            <p class="title is-5">
+              <%= sanitize headers["From"].tr("\"", '').gsub(email, "<small>#{email.tr('<', '').tr('>', '')}</small>"), tags: %w(small) rescue "" %>
+            </p>
+          </div>
+        </div>
+
+        <div class="content">
+          <div>
+            <% if message.payload.parts.blank? %>
+            <% part_headers = headers_to_hash(message.payload.headers) %>
+            <% if part_headers["Content-Type"].starts_with?("text/html") %>
+            <% data = message.payload.body.data.force_encoding("utf-8") %>
+            <div class="yui3-cssreset">
+              <%= content_tag :iframe, nil, type: "text/html", srcdoc: "<base target='_blank'/>#{data}", onload: "this.style.height=this.contentDocument.body.scrollHeight +'px';", class: "is-fullwidth" %>
+            </div>
+            <% elsif part_headers["Content-Type"].starts_with?("text/plain") %>
+            <div class="yui3-cssreset">
+              <%= sanitize message.payload.body.data.force_encoding("utf-8").gsub(/\n/, '<br/>'), tags: ["br"] %>
+            </div>
+            <% elsif part_headers["Content-Disposition"] && part_headers["Content-Disposition"].starts_with?("attachment") %>
+
+            <%= link_to download_mailbox_mail_path(id: @token.id, thread_id: params[:thread_id], m_id: message.id, f_id: message.payload.body.attachment_id, filename: (message.payload.filename || "no-name")), class: "tag is-primary is-medium" do %>
+            <i class="fa fa-download" aria-hidden="true"></i>&nbsp;<%= part.filename %>
+            <% end # END of link%>
+
+            <% end # END of if part_headers["Content-Type"].starts_with?("text/html")%>
+
+            <% else # The payload is separated by parts %>
+            <% message.payload.parts.each do |part| %>
+            <% part_headers = headers_to_hash(part.headers) %>
+            <% if part_headers["Content-Type"].starts_with?("text/html") %>
+            <% data = part.body.data.force_encoding("utf-8") %>
+            <div class="yui3-cssreset">
+              <%= content_tag :iframe, nil, type: "text/html", srcdoc: "<base target='_blank'/>#{data}", onload: "this.style.height=this.contentDocument.body.scrollHeight +'px';", class: "is-fullwidth" %>
+            </div>
+            <% elsif part_headers["Content-Disposition"] && part_headers["Content-Disposition"].starts_with?("attachment") %>
+
+            <%= link_to download_mailbox_mail_path(id: @token.id, thread_id: params[:thread_id], m_id: message.id, f_id: part.body.attachment_id, filename: (part.filename || "no-name")), class: "tag is-primary is-medium" do %>
+            <i class="fa fa-download" aria-hidden="true"></i>&nbsp;<%= part.filename %>
+            <% end # END of link%>
+
+            <% end # END of if part_headers["Content-Type"].starts_with?("text/html")%>
+            <% end # END of loop%>
+            <% end # END of if%>
+          </div>
+          <br>
+          <small><%= headers["Date"] %></small>
+        </div>
+      </div>
+    </div>
+    <% end %>
+      
+    <div class="reply-pane padded">
+      <h1 class="title">Write a Reply</h1>
+      <% if target_message = selected_item[:messages].last %>
+      <% target_headers = target_message.payload.headers.inject({}){|r, h| r.merge(h.name => h.value)} %>
+
+      <%= form_for :message, url: mailbox_mail_path(mailbox_id: params[:mailbox_id], id: params[:id]), method: :put, :html => { multipart: true } do |f| %>
+      <%= f.hidden_field :thread_id, value: params[:thread_id] %>
+      <%= f.hidden_field :message_id, value: target_headers["Message-ID"] %>
+      <%= f.hidden_field :references, value: target_headers["References"] %>
+      <%= f.hidden_field :subject, value: target_headers["Subject"] %>
+      <%= f.hidden_field :to, value: select_emails(selected_item[:messages], @token.email) %>
+      <p class="control">
+        <%= f.text_area :message, :class => "textarea tinymce" %>
+        <%= tinymce :alternate %>
+      </p>
+      <nav class="level">
+        <div class="level-item has-text-left">
+          <p class="heading">
+            <%= f.label :files, class: "label" do %>
+            <i class="fa fa-files-o" aria-hidden="true"></i>&nbsp;Attach Files
+            <% end %>
+          </p>
+          <p class="heading"><%= f.file_field :files, multiple: true %></p>
+        </div>
+        <div class="level-item has-text-right">
+          <%= f.submit "Send", class: "button is-primary" %>
+        </div>
+      </nav>
+      <% end %>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+</div>

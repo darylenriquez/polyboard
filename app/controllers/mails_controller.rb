@@ -4,7 +4,7 @@ class MailsController < ApplicationController
 
   # TODO: Merge this with show
   def search
-    @selected_thread  = {messages: [], headers: nil, labels: []}
+    @selected_item  = {messages: [], headers: nil, labels: []}
 
     @result = @gmail.list_user_messages('me', q: params[:search])
     @items  = {}
@@ -12,10 +12,10 @@ class MailsController < ApplicationController
     @gmail.batch do |g|
       unless params[:thread_id].blank?
         g.get_user_message('me', params[:thread_id]) do | message, res |
-          @selected_thread[:headers] = message.payload.headers.inject({}){|r, h| r.merge(h.name => h.value)}
-          @selected_thread[:labels]  = message.label_ids
+          @selected_item[:headers] = message.payload.headers.inject({}){|r, h| r.merge(h.name => h.value)}
+          @selected_item[:labels]  = message.label_ids
 
-          @selected_thread[:messages] = [message]
+          @selected_item[:messages] = [message]
         end
       end
 
@@ -31,10 +31,12 @@ class MailsController < ApplicationController
         end
       end
     end
+    
+    render action: :show
   end
 
   def show
-    @selected_thread  = {messages: [], headers: nil, labels: []}
+    @selected_item  = {messages: [], headers: nil, labels: []}
     @thread_result    = @gmail.list_user_threads('me')
 
     @threads  = @thread_result.threads
@@ -43,12 +45,12 @@ class MailsController < ApplicationController
     @gmail.batch do |g|
       unless params[:thread_id].blank?
         g.get_user_thread('me', params[:thread_id]) do | threads, res |
-          @selected_thread[:messages] = threads.messages rescue []
+          @selected_item[:messages] = threads.messages rescue []
         end
 
         g.get_user_message('me', params[:thread_id]) do | message, res |
-          @selected_thread[:headers] = message.payload.headers.inject({}){|r, h| r.merge(h.name => h.value)}
-          @selected_thread[:labels]  = message.label_ids
+          @selected_item[:headers] = message.payload.headers.inject({}){|r, h| r.merge(h.name => h.value)}
+          @selected_item[:labels]  = message.label_ids
         end
       end
 

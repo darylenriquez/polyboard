@@ -1,0 +1,26 @@
+<nav class="tabs is-boxed is-fullwidth">
+  <div class="container">
+    <ul>
+      <li class="<%= tab_class(:index) %>">
+        <%= link_to mailboxes_path do %>
+        <i class="fa fa-bars fa-1" aria-hidden='true'></i>&nbsp;Mailboxes
+        <% end %>
+      </li>
+      <li class="<%= tab_class(:new) %>">
+        <%= link_to new_mailbox_path do %>
+        <i class="fa fa-laptop fa-1" aria-hidden='true'></i>&nbsp;Add Mailbox
+        <% end %>
+      </li>
+      <li class="<%= tab_class(:show) %>">
+        <%= link_to (is_mailbox_present? ? mailbox_path(@mailbox.id) : '#'), class: "#{'is-disabled' unless is_mailbox_present?}" do %>
+        <i class="fa fa-laptop fa-1" aria-hidden='true'></i>&nbsp;Show
+        <% end %>
+      </li>
+      <li class="<%= tab_class(:edit) %>">
+        <%= link_to (is_mailbox_present? ? edit_mailbox_path(@mailbox.id) : '#'), class: "#{'is-disabled' unless is_mailbox_present?}" do %>
+        <i class="fa fa-laptop fa-1" aria-hidden='true'></i>&nbsp;Edit
+        <% end %>
+      </li>
+    </ul>
+  </div>
+</nav>

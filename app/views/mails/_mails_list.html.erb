@@ -1,0 +1,16 @@
+<% items.each do |thread_id, item| %>
+<%= link_to url_for(thread_id: thread_id, search: params[:search]), class: "media is-fullwidth padded" do %>
+<div class="media-content">
+  <div class="content">
+    <p>
+      <% email = (item[:sender][/<(.*?)>/m] || "" rescue "") %>
+      <strong>
+        <%= sanitize item[:sender].tr("\"", '').gsub(email, "<small>#{email.tr('<', '').tr('>', '')}</small>"), tags: %w(small) rescue "" %>
+      </strong>
+      <br>
+      <%= item[:snippet] rescue "" %>
+    </p>
+  </div>
+</div>
+<% end %>
+<% end %>
