@@ -1,0 +1,42 @@
+<div class="compose-message-pane padded is-full-height has-vertical-scroll">
+  <h1 class="title">Compose New Message</h1>
+  <div id="compose-messages-pane">
+    <%= form_for :message, url: send_message_mailbox_mail_path(mailbox_id: params[:mailbox_id], id: params[:id]), :html => { multipart: true } do |f| %>
+
+    <%= f.label :subject, nil, class: "label" %>
+    <p class="control">
+      <%= f.text_field :subject, class: "input", placeholder: "subject" %>
+    </p>
+
+    <%= f.label :to, nil, class: "label" %>
+    <p class="control">
+      <%= f.text_field :to, class: "input", placeholder: "subject" %>
+      <span class="help">Add emails seprated by space</span>
+    </p>
+
+    <%= f.label :message, nil, class: "label" %>
+    <p class="control">
+      <%= f.text_area :message, :class => "textarea tinymce" %>
+    </p>
+
+    <nav class="level">
+      <div class="level-item has-text-left">
+        <p class="heading">
+          <%= f.label :files, class: "label" do %>
+          <i class="fa fa-files-o" aria-hidden="true"></i>&nbsp;Attach Files
+          <% end %>
+        </p>
+        <p class="heading"><%= f.file_field :files, multiple: true %></p>
+      </div>
+      <div class="level-item has-text-right">
+        <%= f.submit "Send", class: "button is-primary" %>
+      </div>
+    </nav>
+    <% end %>
+  </div>
+</div>
+<script>
+$(function(){
+  tinyMCE.init({ selector: 'textarea' });
+});
+</script>

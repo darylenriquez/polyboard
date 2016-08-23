@@ -68,6 +68,20 @@ class MailsController < ApplicationController
     end
   end
   
+  def compose
+  end
+  
+  def send_message
+    composed_mail = mail_from_params(mail_params)
+    sent_message  = @gmail.send_user_message('me', upload_source: StringIO.new(composed_mail.to_s), content_type: 'message/rfc822')
+
+    if sent_message.label_ids.blank?
+      redirect_to request.referer
+    else
+      redirect_to action: :search, search: "label:sent", mailbox_id: params[:mailbox_id], id: @token.id, thread_id: sent_message.id
+    end
+  end
+  
   # TODO: Check result before proceeding
   def update    
     composed_mail = mail_from_params(mail_params)
@@ -104,10 +118,16 @@ class MailsController < ApplicationController
 
     mail[:from]  = @token.email
     mail[:to]    = values[:to]
-    mail.subject = values[:subject].starts_with?("Re:") ? values[:subject] : "Re:#{values[:subject]}"
+    mail.subject = if values[:thread_id].blank?
+      values[:subject]
+    else
+      values[:subject].starts_with?("Re:") ? values[:subject] : "Re:#{values[:subject]}"
+    end
 
-    mail.header['References']   = "#{values[:references]} #{values[:message_id]}"
-    mail.header['In-Reply-To']  = "#{values[:message_id]}"
+    unless values[:thread_id].blank?
+      mail.header['References']   = "#{values[:references]} #{values[:message_id]}"
+      mail.header['In-Reply-To']  = "#{values[:message_id]}"
+    end
     
     mail.html_part do
       content_type "text/html; charset=\"UTF-8\""
