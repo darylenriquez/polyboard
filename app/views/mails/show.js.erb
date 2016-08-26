@@ -1,13 +1,16 @@
-<% if params[:target] == 'MESSAGE' %>
+<% if params[:target] == 'MESSAGE' || params[:target].blank? %>
   $("#messages-pane").empty().append($("<%= escape_javascript(render partial: 'message', locals: {selected_item: @selected_item}) %>"));
 
   $("#mail-links > .message.is-active").removeClass('is-active');
   $("#mail-links > .message#<%= params[:thread_id] %>").addClass('is-active');
-  
-  $(function(){
-    scrollToTarget();
-  });
-<% elsif params[:target] == 'APPEND_LIST' %>
+
+  tinyMCE.editors = [];
+  tinyMCE.init({ selector: 'textarea' });
+
+  iframeHeightAndScroll();
+<% end %>
+
+<% if params[:target] == 'APPEND_LIST' || params[:target].blank? %>
 $("#mail-paginator").remove();
 
 <% if params[:next_page_token].blank? %>
@@ -15,5 +18,7 @@ $("#mail-paginator").remove();
 <% end %>
 
 $("#mail-links").append($("<%= escape_javascript(render partial: 'mails_list', locals: {items: @items}) %>").find("#mail-links").html());
-
 <% end %>
+
+setupCallbacks();
+history.pushState({}, '', "<%= url_for(path_params.except(:next_page_token)) %>");

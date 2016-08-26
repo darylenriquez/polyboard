@@ -1,16 +1,16 @@
 <nav class="panel sidebar-panel">
   <p class="panel-tabs">
-    <%= link_to "All", mailbox_mail_path(mailbox_id: params[:mailbox_id], id: @token.id) %>
-    <%= link_to "Unread", mailbox_mail_path(mailbox_id: params[:mailbox_id], id: @token.id, search: "label:unread") %>
-    <%= link_to "Read", mailbox_mail_path(mailbox_id: params[:mailbox_id], id: @token.id, search: "label:read") %>
-    <%= link_to "Sent", mailbox_mail_path(mailbox_id: params[:mailbox_id], id: @token.id, search: "label:sent") %>
+    <%= link_to "All", mailbox_mail_path(path_params.merge(label: nil)), class: is_active_class(:label, nil) %>
+    <%= link_to "Unread", mailbox_mail_path(path_params.merge(label: "in:unread")), class: is_active_class(:label, "in:unread") %>
+    <%= link_to "Read", mailbox_mail_path(path_params.merge(label: "in:read")), class: is_active_class(:label, "in:read") %>
+    <%= link_to "Sent", mailbox_mail_path(path_params.merge(label: "in:sent")), class: is_active_class(:label, "in:sent") %>
   </p>
   <div id="mail-links">
     <% items.each do |thread_id, item| %>
     <% unless item[:sender].blank? %>
-    <% classes = "panel-block is-fullwidth message #{label_class_name(item[:labels])} #{'is-active' if is_current(thread_id)}" %>
-    <% email = (item[:sender][/<(.*?)>/m] || "" rescue "") %>
-    <% show_link = url_for(thread_id: thread_id, search: params[:search], target: 'MESSAGE') %>
+    <% classes    = "panel-block is-fullwidth message #{label_class_name(item[:labels])} #{'is-active' if is_current(thread_id)}" %>
+    <% email      = (item[:sender][/<(.*?)>/m] || "" rescue "") %>
+    <% show_link  = url_for(path_params.merge(thread_id: thread_id, target: 'MESSAGE')) %>
 
     <%= link_to show_link, class: classes, remote: true, id: thread_id do %>
     <strong>
@@ -18,15 +18,18 @@
       <%= sanitize item[:sender].tr("\"", '').gsub(email, "<small>#{email.tr('<>', '')}</small>"), tags: %w(small) rescue "" %>
     </strong>
     <p><%= item[:snippet] rescue "" %></p>
-    <small><%= item[:date] %></small>
+    <small><%= formatted_date_ago(item[:date]) %></small>
     <% end %>
     <% end %>
     <% end %>
     <div class="panel-block" id="mail-paginator">
       <% unless @thread_result.next_page_token.blank? %>
-      <%= link_to "Load More ... ", mailbox_mail_path(mailbox_id: params[:mailbox_id], id: @token.id, target: 'APPEND_LIST', next_page_token: @thread_result.next_page_token), class: 'button is-primary is-outlined is-fullwidth', remote: true %>
+      <% paging_url = url_for(path_params.merge(target: 'APPEND_LIST', next_page_token: @thread_result.next_page_token)) %>
+      <%= link_to "Load More ... ", paging_url, class: 'button is-primary is-outlined is-fullwidth', remote: true, id: "paging-link" %>
       <% else %>
-      No More Items to Show
+      <span class="panel-block has-text-centered" href="#">
+        <i class="fa fa-stop-circle icon is-small"></i> No More Items to Show
+      </span>
       <% end %>
     </div>
   </div>

@@ -13,5 +13,6 @@
 //= require jquery
 //= require jquery_ujs
 //= require tinymce-jquery
+//= require notify
 //= require common
 //= require_tree .

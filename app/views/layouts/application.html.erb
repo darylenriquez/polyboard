@@ -10,18 +10,7 @@
 
   <body data-no-turbolink="true">
     <%= render partial: 'layouts/header' %>
-    <% unless notice.blank? %>
-    <div class="notification is-info">
-      <button class="delete"></button>
-      <%= notice %>
-    </div>
-    <% end %>
-    <% unless alert.blank? %>
-    <div class="notification is-warning">
-      <button class="delete"></button>
-      <%= alert %>
-    </div>
-    <% end %>
+    <%= render partial: 'layouts/flash' %>
     <div class="pure-content">
       <% if lookup_context.exists?("#{controller_name}/_layout") %>
       <%= render partial: "#{controller_name}/layout" %>

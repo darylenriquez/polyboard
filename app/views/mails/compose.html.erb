@@ -1,7 +1,7 @@
 <div class="compose-message-pane padded is-full-height has-vertical-scroll">
   <h1 class="title">Compose New Message</h1>
   <div id="compose-messages-pane">
-    <%= form_for :message, url: send_message_mailbox_mail_path(mailbox_id: params[:mailbox_id], id: params[:id]), :html => { multipart: true } do |f| %>
+    <%= form_for :message, url: deliver_mailbox_mail_path(mailbox_id: params[:mailbox_id], id: params[:id]), :html => { multipart: true } do |f| %>
 
     <%= f.label :subject, nil, class: "label" %>
     <p class="control">

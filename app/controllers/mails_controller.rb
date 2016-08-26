@@ -2,82 +2,41 @@
 class MailsController < ApplicationController
   before_filter :set_token_and_gmail
 
-  # TODO: Merge this with show
-  def search
-    @selected_item  = {messages: [], headers: nil, labels: []}
-
-    @result = @gmail.list_user_messages('me', q: params[:search])
-    @items  = {}
-
-    @gmail.batch do |g|
-      unless params[:thread_id].blank?
-        g.get_user_message('me', params[:thread_id]) do | message, res |
-          @selected_item[:headers] = message.payload.headers.inject({}){|r, h| r.merge(h.name => h.value)}
-          @selected_item[:labels]  = message.label_ids
-
-          @selected_item[:messages] = [message]
-        end
-      end
-
-      @result.messages.each do |m|
-        g.get_user_message('me', m.id, fields: "id,labelIds,payload/headers,snippet") do | message, res |
-          @items[m.id] = if message.blank?
-            {} # Sometimes this happens
-          else
-            headers = message.payload.headers.inject({}){|r, h| r.merge(h.name => h.value)}
-
-            { message_id: message.id, labels: message.label_ids, sender: headers["From"], snippet: message.snippet }
-          end
-        end
-      end
-    end
-    
-    render action: :show
-  end
-
   def show
-    @selected_item  = {messages: [], headers: nil, labels: []}
+    @selected_item  = { messages: [], headers: nil, labels: [] }
     @items          = {}
 
-    
-    if request.xhr?
-      if params[:target] == 'MESSAGE'
-        retrieve_selected_message(@gmail)
-      elsif params[:target] == 'APPEND_LIST'
-        @thread_result  = @gmail.list_user_threads('me', max_results: MAXIMUM_THREAD, page_token: params[:next_page_token])
-        @threads        = @thread_result.threads
+    if !request.xhr? || (request.xhr? && (params[:target].blank? || params[:target] == 'APPEND_LIST'))
+      @thread_result  = @gmail.list_user_threads('me', max_results: MAXIMUM_THREAD, page_token: params[:next_page_token], q: search_params)
+      @threads        = @thread_result.threads || []
 
+      unless @threads.length.zero?
         @gmail.batch do |g|
+          retrieve_selected_message(g) unless params[:target] == 'APPEND_LIST'
           retrieve_threads_info(g)
         end
-      else
-        raise ActionController::BadRequest
       end
+    elsif request.xhr? && params[:target] == 'MESSAGE'
+      retrieve_selected_message(@gmail)
     else
-      @thread_result  = @gmail.list_user_threads('me', max_results: MAXIMUM_THREAD)
-      @threads        = @thread_result.threads
-
-      @gmail.batch do |g|
-        retrieve_selected_message(g)
-        retrieve_threads_info(g)
-      end
+      raise ActionController::BadRequest
     end
   end
   
   def compose
   end
   
-  def send_message
+  def deliver
     composed_mail = mail_from_params(mail_params)
     sent_message  = @gmail.send_user_message('me', upload_source: StringIO.new(composed_mail.to_s), content_type: 'message/rfc822')
 
     if sent_message.label_ids.blank?
       redirect_to request.referer
     else
-      redirect_to action: :search, search: "label:sent", mailbox_id: params[:mailbox_id], id: @token.id, thread_id: sent_message.id
+      redirect_to action: :show, label: "in:sent", mailbox_id: params[:mailbox_id], id: @token.id, thread_id: sent_message.thread_id
     end
   end
-  
+
   # TODO: Check result before proceeding
   def update    
     composed_mail = mail_from_params(mail_params)
@@ -93,8 +52,15 @@ class MailsController < ApplicationController
     https.use_ssl = true
     result = https.post("#{url.path}?access_token=#{@token.fresh_token}", body, head)
 
-    # redirect_to action: :show, thread_id: mail_params[:thread_id], mailbox_id: params[:mailbox_id], id: @token.id
-    redirect_to request.referer
+    
+    if request.xhr?
+      @selected_item  = { messages: [], headers: nil, labels: [] }
+      retrieve_selected_message(@gmail)
+
+      render action: :show
+    else
+      redirect_to request.referer
+    end
   end
   
   def download
@@ -105,6 +71,11 @@ class MailsController < ApplicationController
   end
 
   private # ======================================================
+  # TODO: validate params[:search]
+  def search_params
+    [params[:label], params[:search]].join(" ")
+  end
+
   def retrieve_selected_message(gmail)
     unless params[:thread_id].blank?
       gmail.get_user_thread('me', params[:thread_id]) do | threads, res |

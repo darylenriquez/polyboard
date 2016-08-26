@@ -6,20 +6,3 @@
     <%= render partial: "message", locals: {selected_item: @selected_item} %>
   </div>
 </div>
-
-<script>
-var scrollToTarget = function(){
-  var item  = $(".messages > .card:last");
-  
-  if(item.size > 0){
-    var limit = item.offset().top - item.parent().offset().top - item.parent().scrollTop();
-
-    $(".messages").animate({ scrollTop: limit}, 1000);
-  }
-}
-
-
-  $(function(){
-    scrollToTarget();
-  });
-</script>

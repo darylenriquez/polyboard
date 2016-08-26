@@ -9,9 +9,8 @@ Rails.application.routes.draw do
     resources :mails, except: [:index, :destroy, :create, :new] do
       member do
         get 'download'
-        get 'search'
         get 'compose'
-        post 'send_message'
+        post 'deliver'
       end
     end
   end

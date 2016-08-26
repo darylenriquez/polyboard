@@ -12,7 +12,7 @@
   <div class="message-info padded">
     <h5 class="title is-5">
       <i class="fa fa-calendar" aria-hidden="true" title="<%= selected_item[:headers]["Date"] %>"></i>&nbsp;
-      <%= selected_item[:headers]["Subject"] %><small>&nbsp;(<%= selected_item[:headers]["Date"] %>)</small>
+      <%= selected_item[:headers]["Subject"] %><small>&nbsp;(<%= formatted_date(selected_item[:headers]["Date"]) %>)</small>
     </h5>
     <p>
       <% users = [selected_item[:headers]["From"], selected_item[:headers]["To"], selected_item[:headers]["Cc"]].compact.join(" | ") %>
@@ -42,7 +42,7 @@
             <% if part_headers["Content-Type"].starts_with?("text/html") %>
             <% data = message.payload.body.data.force_encoding("utf-8") %>
             <div class="yui3-cssreset">
-              <%= content_tag :iframe, nil, type: "text/html", srcdoc: "<base target='_blank'/>#{data}", onload: "this.style.height=this.contentDocument.body.scrollHeight +'px';", class: "is-fullwidth" %>
+              <%= content_tag :iframe, nil, type: "text/html", srcdoc: "<base target='_blank'/>#{data}", class: "is-fullwidth" %>
             </div>
             <% elsif part_headers["Content-Type"].starts_with?("text/plain") %>
             <div class="yui3-cssreset">
@@ -62,7 +62,7 @@
             <% if part_headers["Content-Type"].starts_with?("text/html") %>
             <% data = part.body.data.force_encoding("utf-8") %>
             <div class="yui3-cssreset">
-              <%= content_tag :iframe, nil, type: "text/html", srcdoc: "<base target='_blank'/>#{data}", onload: "this.style.height=this.contentDocument.body.scrollHeight +'px';", class: "is-fullwidth" %>
+              <%= content_tag :iframe, nil, type: "text/html", srcdoc: "<base target='_blank'/>#{data}", class: "is-fullwidth" %>
             </div>
             <% elsif part_headers["Content-Disposition"] && part_headers["Content-Disposition"].starts_with?("attachment") %>
 
@@ -75,7 +75,7 @@
             <% end # END of if%>
           </div>
           <br>
-          <small><%= headers["Date"] %></small>
+          <small><%= formatted_date_ago(headers["Date"]) %></small>
         </div>
       </div>
     </div>
@@ -86,7 +86,7 @@
       <% if target_message = selected_item[:messages].last %>
       <% target_headers = target_message.payload.headers.inject({}){|r, h| r.merge(h.name => h.value)} %>
 
-      <%= form_for :message, url: mailbox_mail_path(mailbox_id: params[:mailbox_id], id: params[:id]), method: :put, :html => { multipart: true } do |f| %>
+      <%= form_for :message, url: mailbox_mail_path(mailbox_id: params[:mailbox_id], id: params[:id], target: 'MESSAGE', thread_id: params[:thread_id]), method: :put, :html => { multipart: true }, remote: true do |f| %>
       <%= f.hidden_field :thread_id, value: params[:thread_id] %>
       <%= f.hidden_field :message_id, value: target_headers["Message-ID"] %>
       <%= f.hidden_field :references, value: target_headers["References"] %>

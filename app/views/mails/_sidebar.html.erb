@@ -1,4 +1,4 @@
-<aside class="menu">
+<aside class="menu padded">
   <p class="menu-label">
     Mailboxes
   </p>
@@ -13,30 +13,16 @@
   </p>
   <ul class="menu-list">
     <li>
-      <%= link_to "Github", search_mailbox_mail_path(mailbox_id: params[:mailbox_id], id: params[:id], search: "github") %>
+      <%= link_to "Github", mailbox_mail_path(mailbox_id: params[:mailbox_id], id: params[:id], search: "github"), class: is_active_class(:search, "github") %>
     </li>
     <li>
-      <%= link_to "Adish", search_mailbox_mail_path(mailbox_id: params[:mailbox_id], id: params[:id], search: "adish") %>
+      <%= link_to "Adish", mailbox_mail_path(mailbox_id: params[:mailbox_id], id: params[:id], search: "adish"), class: is_active_class(:search, "adish") %>
     </li>
     <li>
-      <a href="#">Common Labels</a>
-      <ul>
-        <li>
-          <%= link_to "Unread", search_mailbox_mail_path(mailbox_id: params[:mailbox_id], id: params[:id], search: "label:unread") %>
-        </li>
-        <li>
-          <%= link_to "Read", search_mailbox_mail_path(mailbox_id: params[:mailbox_id], id: params[:id], search: "label:read") %>
-        </li>
-        <li>
-          <%= link_to "Sent", search_mailbox_mail_path(mailbox_id: params[:mailbox_id], id: params[:id], search: "label:sent") %>
-        </li>
-      </ul>
+      <%= link_to "No Labels", mailbox_mail_path(mailbox_id: params[:mailbox_id], id: params[:id], search: "has:nouserlabels"), class: is_active_class(:search, "has:nouserlabels") %>
     </li>
     <li>
-      <%= link_to "No Labels", search_mailbox_mail_path(mailbox_id: params[:mailbox_id], id: params[:id], search: "has:nouserlabels") %>
-    </li>
-    <li>
-      <%= link_to "Bounced", search_mailbox_mail_path(mailbox_id: params[:mailbox_id], id: params[:id], search: "from:Bounce<nobody@gmail.com>") %>
+      <%= link_to "Bounced", mailbox_mail_path(mailbox_id: params[:mailbox_id], id: params[:id], search: "from:Bounce<nobody@gmail.com>"), class: is_active_class(:search, "from:Bounce<nobody@gmail.com>") %>
     </li>
   </ul>
   <% end %>
