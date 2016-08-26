@@ -1,4 +1,3 @@
-<%= render partial: 'tabs' %>
 
 <div class="columns padded">
   <div class="column is-8 is-offset-2 ">
@@ -14,11 +13,13 @@
         <p><%= notice %></p>
       </div>
       <% end %>
+      <% unless @mailbox.cover_photo.blank? %>
       <div class="card-image">
         <figure class="image">
           <%= image_tag @mailbox.cover_photo.url %>
         </figure>
       </div>
+      <% end %>
       <div class="card-content">
         <div class="content">
           <%= raw @mailbox.description.html_safe %>

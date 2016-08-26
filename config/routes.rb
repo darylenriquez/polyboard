@@ -6,9 +6,11 @@ Rails.application.routes.draw do
     resources :inboxes, only: [:show]
 
     resources :tokens, only: [:create, :update]
-    resources :mails, except: [:index, :destroy, :create] do
+    resources :mails, except: [:index, :destroy, :create, :new] do
       member do
         get 'download'
+        get 'compose'
+        post 'deliver'
       end
     end
   end

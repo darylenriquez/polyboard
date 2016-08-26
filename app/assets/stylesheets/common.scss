@@ -21,16 +21,16 @@ $error-dark: #DA4453;
   &.is-light-mint {
     background: $mint-light-bg;
     color: $mint-light-color;
-    
+
     .nav-left, .nav-toggle, .nav-right {
       a {
         color: $mint-light-color;
-        
+
         &:hover {
           color: $mint-dark-color-selected;
         }
       }
-      
+
       .nav-item {
         &.is-active {
           background: $mint-dark-bg;
@@ -50,8 +50,45 @@ $error-dark: #DA4453;
   padding: 10px;
 }
 
+.has-pad-top {
+  padding-top: 5px;
+}
+
 .field_with_errors {
   input, textarea {
     border: 1px solid $error-dark;
+  }
+}
+
+.hidden {
+  display: none!important;
+}
+
+.notifyjs-container {
+  div {
+    margin-bottom: 20px;
+    border-radius: 3px;
+    padding: 16px 20px;
+    position: relative;
+    min-width: 200px;
+    max-width: 500px;
+    opacity: 0.8;
+    
+    button.delete {
+      border-radius: 0 3px;
+      float: right;
+      margin: -16px -20px 0 20px;
+      outline: none;
+
+      &:after {
+        -webkit-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+      }
+
+      &:before {
+        -webkit-transform: rotate(45deg);
+        transform: rotate(45deg);
+      }
+    }
   }
 }

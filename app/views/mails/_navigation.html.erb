@@ -1,0 +1,21 @@
+<nav class="tabs is-boxed is-fullwidth">
+  <div class="container">
+    <ul>
+      <li>
+        <%= link_to mailbox_path(params[:mailbox_id]) do %>
+        <i class="fa fa-laptop fa-1" aria-hidden='true'></i>&nbsp;Mailbox
+        <% end %>
+      </li>
+      <li class="<%= tab_class(:show) %>">
+        <%= link_to mailbox_mail_path(mailbox_id: params[:mailbox_id], id: @token.id) do %>
+        <i class="fa fa-bars fa-1" aria-hidden='true'></i>&nbsp;Mails&nbsp;(<%= @token.email %>)
+        <% end %>
+      </li>
+      <li class="<%= tab_class(:compose) %>">
+        <%= link_to compose_mailbox_mail_path(mailbox_id: params[:mailbox_id], id: @token.id) do %>
+        <i class="fa fa-pencil-square-o fa-1" aria-hidden='true'></i>&nbsp;Compose&nbsp;(<%= @token.email %>)
+        <% end %>
+      </li>
+    </ul>
+  </div>
+</nav>

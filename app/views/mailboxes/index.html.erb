@@ -1,35 +1,30 @@
-<%= render partial: 'tabs' %>
-
 <div class="columns">
   <div class="column is-10 is-offset-1">
+    <br/>
     <h1 class="title">Mailboxes</h1>
     
-    <div class="columns">
-      <% @mailboxes.each do |mailbox| %>
-      <div class="column is-one-quarter">
+    <div class="columns is-half-quarter">
+      <div class="column">
+        <% @mailboxes.each do |mailbox| %>
         <div class="card is-fullwidth">
+          <header class="card-header">
+            <p class="card-header-title">
+              <%= link_to mailbox_path(mailbox.id) do %>
+              <i class="fa fa-file" aria-hidden></i>&nbsp;<%= mailbox.name %>
+              <% end %>
+            </p>
+            <%= link_to edit_mailbox_path(mailbox.id), class: 'card-header-icon' do %>
+            <i class="fa fa-edit" aria-hidden></i>&nbsp;
+            <% end %>
+          </header>
           <div class="card-content">
-            <div class="media">
-              <div class="media-content">
-                <p class="title is-4"><%= mailbox.name %></p>
-              </div>
-            </div>
-
             <div class="content">
               <%= mailbox.description %>
             </div>
           </div>
-          <footer class="card-footer">
-            <%= link_to mailbox_path(mailbox.id), class: 'card-footer-item' do %>
-            <i class="fa fa-file" aria-hidden></i>&nbsp;View
-            <% end %>
-            <%= link_to edit_mailbox_path(mailbox.id), class: 'card-footer-item' do %>
-            <i class="fa fa-edit" aria-hidden></i>&nbsp;Edit
-            <% end %>
-          </footer>
         </div>
+        <% end %>
       </div>
-      <% end %>
     </div>
   </div>
 </div>

@@ -9,26 +9,8 @@
   </head>
 
   <body>
-    
     <section class="hero is-fullheight is-dark-mint">
-      <div class="hero-head">
-        <div class="container">
-          <div class="notification-messages">
-            <% unless notice.blank? %>
-            <div class="notification is-info">
-              <button class="delete"></button>
-              <%= notice %>
-            </div>
-            <% end %>
-            <% unless alert.blank? %>
-            <div class="notification is-warning">
-              <button class="delete"></button>
-              <%= alert %>
-            </div>
-            <% end %>
-          </div>
-        </div>
-      </div>
+      <%= render partial: 'layouts/flash' %>
 
       <div class="hero-body">
         <div class="container">

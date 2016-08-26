@@ -2,121 +2,104 @@
 @import "font-awesome";
 @import "bulma";
 @import "common";
-
-html, body, .pure-content {
-  height: 100%;
-}
+@import "cssreset-context-min";
 
 .pure-content {
-  min-width: 800px;
+  height: 650px;
+  background: #fff;
 }
 
-.pure-content-header {
-  position: fixed;
-  left: 0;
-  right: 0;
-  height: 50px;
-  top: 0;
+.is-full-height {
+  height: 100%;
 }
 
-.pure-content-sidebar {
-  position: fixed;
-  top: 50px;
-  bottom: 0;
+.is-dark-gray {
   background: #434A54;
-  width: 16.8%!important;
-  min-width: 200px!important;
 }
 
-.pure-content-main {
-  position: relative;
-  top: 50px;
-  margin-top: 10px;
-  margin-left: 16.5%!important;
-  padding-left: 0;
-  position: relative;
-  border-bottom: 1px solid #d3d6db;
-  min-width: 600px!important;
-}
-
-.pure-content-body {
-  min-height: 90%;;
-}
-
-.index {
-  background: none!important;
-}
-
-.messages-box {
-  float: left;
-  width: 30%;
+.is-hidden-overflow {
   overflow: hidden;
-  height: 100%;
+}
+
+.has-vertical-scroll {
   overflow-y: scroll;
-  margin: 0;
-  border-right: thin solid #d3d6db;
-
-  .media {
-    padding: 5px;
-  }
+  overflow-x: hidden;
 }
 
-.message-tabs {
-  margin: 0;
-}
+.message-info {
+  max-height: 95px;
+  border-bottom: thick solid rgba(211, 214, 219, 0.5);
 
-.divided {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  top: 45px;
-  padding-top: 2px;
-}
-
-.message-content {
-  float: left;
-  height: 100%;
-  width: 69%;
-  position: relative;
-  
-  .section {
-    height: 100%;
-  }
-  
-  .message-content-detail {
-    border-bottom: thin solid #d3d6db;
-    padding: 2px;
-
-    .column {
-      .heading {
-        text-transform: none;
-      }
-    }
-  }
-  
-  .messages {
-    position: absolute;
-    top: 90px;
-    bottom: 0;
+  .title {
+    height: 20px;
     overflow: hidden;
-    overflow-y: scroll;
-    left: 0;
-    right: 0px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 5px;
+  }
+}
+
+.partial-border-top-right {
+  border-top-right-radius: 5px;
+}
+
+.has-border-top {
+  border-top: 1px solid rgba(211, 214, 219, 0.5);
+}
+
+.has-border-right {
+  border-right: 1px solid rgba(211, 214, 219, 0.5);
+}
+
+.message-info + .messages {
+  padding-bottom: 95px;
+}
+
+@media screen and (max-width: 769px) {
+  .is-full-height {
+    height: auto;
+  }
+
+  .message-info + .messages {
+    padding-bottom: 0px;
+    padding-top: 20px;
+  }
+
+  .pure-content {
+    height: auto;
+  }
+} 
+
+body > .notification {
+  width: 70%;
+  margin: 20px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+iframe.is-fullwidth {
+  width: 100%;
+}
+
+.yui3-cssreset .gmail_extra {
+  display: none;
+}
+
+.hero-head + nav.tabs {
+  padding-top: 5px;
+}
+
+.sidebar-panel {
+  border: none;
+  border-radius: 0;
+  
+  .message {
+    border-radius: 0;
+    margin-bottom: 0;
     
-    .reply-pane {
-      padding: 5px;
+    &.is-active {
+      border-right: thick solid #37BC9B;
     }
   }
-  
-  h1.title {
-    padding: 5px;
-    margin-bottom: 8px;
-    overflow: hidden;
-    height: 35px;
-  }
-}
-
-.gmail_quote {
-  display: none!important;
 }

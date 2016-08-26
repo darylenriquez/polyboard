@@ -1,0 +1,36 @@
+<nav class="panel sidebar-panel">
+  <p class="panel-tabs">
+    <%= link_to "All", mailbox_mail_path(path_params.merge(label: nil)), class: is_active_class(:label, nil) %>
+    <%= link_to "Unread", mailbox_mail_path(path_params.merge(label: "in:unread")), class: is_active_class(:label, "in:unread") %>
+    <%= link_to "Read", mailbox_mail_path(path_params.merge(label: "in:read")), class: is_active_class(:label, "in:read") %>
+    <%= link_to "Sent", mailbox_mail_path(path_params.merge(label: "in:sent")), class: is_active_class(:label, "in:sent") %>
+  </p>
+  <div id="mail-links">
+    <% items.each do |thread_id, item| %>
+    <% unless item[:sender].blank? %>
+    <% classes    = "panel-block is-fullwidth message #{label_class_name(item[:labels])} #{'is-active' if is_current(thread_id)}" %>
+    <% email      = (item[:sender][/<(.*?)>/m] || "" rescue "") %>
+    <% show_link  = url_for(path_params.merge(thread_id: thread_id, target: 'MESSAGE')) %>
+
+    <%= link_to show_link, class: classes, remote: true, id: thread_id do %>
+    <strong>
+      <i class="fa fa-envelope<%= '-o' unless item[:labels].include?("UNREAD") %> icon is-small" aria-hidden="true"></i>
+      <%= sanitize item[:sender].tr("\"", '').gsub(email, "<small>#{email.tr('<>', '')}</small>"), tags: %w(small) rescue "" %>
+    </strong>
+    <p><%= item[:snippet] rescue "" %></p>
+    <small><%= formatted_date_ago(item[:date]) %></small>
+    <% end %>
+    <% end %>
+    <% end %>
+    <div class="panel-block" id="mail-paginator">
+      <% unless @thread_result.next_page_token.blank? %>
+      <% paging_url = url_for(path_params.merge(target: 'APPEND_LIST', next_page_token: @thread_result.next_page_token)) %>
+      <%= link_to "Load More ... ", paging_url, class: 'button is-primary is-outlined is-fullwidth', remote: true, id: "paging-link" %>
+      <% else %>
+      <span class="panel-block has-text-centered" href="#">
+        <i class="fa fa-stop-circle icon is-small"></i> No More Items to Show
+      </span>
+      <% end %>
+    </div>
+  </div>
+</nav>

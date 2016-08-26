@@ -7,6 +7,10 @@ module ApplicationHelper
     'is-active' if controller.action_name.to_sym == key
   end
   
+  def is_active_class(key, expected)
+    'is-active' if params[key] == expected
+  end
+  
   def mailboxes
     Mailbox.pluck(:name, :id)
   end

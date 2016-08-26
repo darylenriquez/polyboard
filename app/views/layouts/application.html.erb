@@ -9,17 +9,15 @@
   </head>
 
   <body data-no-turbolink="true">
+    <%= render partial: 'layouts/header' %>
+    <%= render partial: 'layouts/flash' %>
     <div class="pure-content">
-      <%= render partial: 'layouts/navigation' %>
-
-      <div class="pure-content-body columns">
-        <div class="pure-content-sidebar column is-2">
-          <%= render partial: 'layouts/sidebar' %>
-        </div>
-        <div class="pure-content-main column is-offset-2">
-          <%= yield %>
-        </div>
-      </div>
+      <% if lookup_context.exists?("#{controller_name}/_layout") %>
+      <%= render partial: "#{controller_name}/layout" %>
+      <% else %>
+      <%= yield %>
+      <% end %>
     </div>
+    <%= render partial: 'layouts/footer' %>
   </body>
 </html>

@@ -1,0 +1,15 @@
+<section class="hero is-primary">
+  <div class="hero-head">
+    <div class="container">
+      <%= render partial: "layouts/navigation" %>
+    </div>
+  </div>
+
+  <% if lookup_context.exists?("#{controller_name}/_information") %>
+  <div class="hero-body">
+    <%= render partial: "#{controller_name}/information" %>
+  </div>
+  <% end %>
+
+  <%= render partial: "#{controller_name}/navigation" if lookup_context.exists?("#{controller_name}/_navigation") %>
+</section>
