@@ -1,4 +1,5 @@
 class MailboxesController < ApplicationController
+  before_action :authenticate_user!
   before_filter :find_mailbox, only: [:edit, :show, :update]
   before_filter :build_mailbox, only: [:new, :create]
 

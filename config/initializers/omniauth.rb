@@ -4,3 +4,5 @@ Rails.application.config.middleware.use OmniAuth::Builder do
     access_type: 'offline'
   }
 end
+
+OmniAuth.config.on_failure = TokensController.action(:create)

@@ -1,6 +1,7 @@
 # TODO: Implement ajax for speed
 class MailsController < ApplicationController
-  before_filter :set_token_and_gmail
+  before_action :authenticate_user!
+  before_filter :set_token_and_gmail, :authorize_token
 
   def show
     @selected_item  = { messages: [], headers: nil, labels: [] }
@@ -21,11 +22,15 @@ class MailsController < ApplicationController
     else
       raise ActionController::BadRequest
     end
+  rescue Google::Apis::AuthorizationError => e
+    authorize_token(true)
+  rescue
+    redirect_to_mailboxes_with_flash(:error, "An error Occured!. Please try again later.")
   end
-  
+
   def compose
   end
-  
+
   def deliver
     composed_mail = mail_from_params(mail_params)
     sent_message  = @gmail.send_user_message('me', upload_source: StringIO.new(composed_mail.to_s), content_type: 'message/rfc822')
@@ -73,7 +78,7 @@ class MailsController < ApplicationController
   private # ======================================================
   # TODO: validate params[:search]
   def search_params
-    [params[:label], params[:search]].join(" ")
+    [params[:label], params[:search]].join(" ").strip
   end
 
   def retrieve_selected_message(gmail)
@@ -128,7 +133,7 @@ class MailsController < ApplicationController
       mail.header['References']   = "#{values[:references]} #{values[:message_id]}"
       mail.header['In-Reply-To']  = "#{values[:message_id]}"
     end
-    
+
     mail.html_part do
       content_type "text/html; charset=\"UTF-8\""
       body "<div class='gmail_default'>#{values[:message]}</div>"
@@ -142,8 +147,22 @@ class MailsController < ApplicationController
   
   def set_token_and_gmail
     @token = Token.find(params[:id])
-
     @gmail = Google::Apis::GmailV1::GmailService.new
-    @gmail.authorization = @token.as_credential
+  end
+
+  def authorize_token(force = false)
+    @token.refresh! if force || (!force && @token.expired?)
+
+    @gmail.authorization = @token.to_signet
+
+    send(controller.action_name) if force
+  rescue Signet::AuthorizationError => e
+    redirect_to_mailboxes_with_flash(:error, (JSON.parse(e.response.body)["error_description"] rescue "An error Occured!"))
+  end
+
+  def redirect_to_mailboxes_with_flash(type = nil, message = nil)
+    flash[type] = message unless message.blank?
+
+    redirect_to controller: :mailboxes, action: :show, id: @token.mailbox_id
   end
 end
