@@ -1,6 +1,7 @@
 tmp/
-public/system/mailboxes/
+public/system
 .byebug_history
 log/*
 log/development.log
 .DS_Store
+config/gmail_variables.yml

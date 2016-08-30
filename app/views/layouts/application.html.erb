@@ -11,7 +11,7 @@
   <body data-no-turbolink="true">
     <%= render partial: 'layouts/header' %>
     <%= render partial: 'layouts/flash' %>
-    <div class="pure-content">
+    <div class="pure-content <%= controller_name %>-content">
       <% if lookup_context.exists?("#{controller_name}/_layout") %>
       <%= render partial: "#{controller_name}/layout" %>
       <% else %>

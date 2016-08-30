@@ -13,6 +13,14 @@
     <%= link_to mailboxes_path, class: "nav-item #{nav_class(:mailboxes)}" do %>
     <i class="fa fa-laptop" aria-hidden="true"></i>&nbsp;Mailboxes
     <% end %>
+    <%= link_to edit_user_registration_path, class: 'nav-item' do %>
+    <% if current_user.avatar.blank? %>
+    <i class="fa fa-user-secret" aria-hidden="true"></i>
+    <% else %>
+    <%= image_tag(current_user.avatar.url) %>
+    <% end %>
+    &nbsp;Update Details
+    <% end %>
     <%= link_to destroy_user_session_path, method: :delete, class: 'nav-item' do %>
     <i class="fa fa-power-off" aria-hidden="true"></i>&nbsp;Logout
     <% end %>

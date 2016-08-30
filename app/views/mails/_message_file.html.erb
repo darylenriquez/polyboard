@@ -1,0 +1,7 @@
+<div class="file-mail">
+  <% options = { id: @token.id, thread_id: params[:thread_id], m_id: message.id, f_id: data[:attachment_id], filename: (data[:filename] || "no-name") } %>
+
+  <%= link_to download_mailbox_mail_path(options), class: "tag is-primary is-medium" do %>
+  <i class="fa fa-download" aria-hidden="true"></i>&nbsp;<%= options[:filename] %>
+  <% end # END of link %>
+</div>

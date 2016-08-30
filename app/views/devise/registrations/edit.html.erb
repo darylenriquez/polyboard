@@ -1,43 +1,57 @@
-<h2>Edit <%= resource_name.to_s.humanize %></h2>
+<div class="columns is-mobile">
+  <div class="column is-4 is-offset-4">
+    <h4 class="title is-3 has-text-left">Edit Account</h4>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
-  <%= devise_error_messages! %>
-
-  <div class="field">
-    <%= f.label :username %><br />
-    <%= f.email_field :username, autofocus: true %>
-  </div>
-
-  <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-    <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
-  <% end %>
-
-  <div class="field">
-    <%= f.label :password %> <i>(leave blank if you don't want to change it)</i><br />
-    <%= f.password_field :password, autocomplete: "off" %>
-    <% if @minimum_password_length %>
-      <br />
-      <em><%= @minimum_password_length %> characters minimum</em>
+    <% resource.errors.full_messages.each do |message| %>
+    <%= content_tag(:div, message, :class => "flash error hidden", data: {type: :error}) %>
     <% end %>
+
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+
+    <%= f.label :username, nil, class: 'label' %>
+    <p class="control has-icon has-icon-right">
+      <%= f.text_field :username, autofocus: true, class: 'input' %>
+    </p>
+
+    <%= f.label :password, nil, class: 'label' %>
+    <p class="control has-icon has-icon-right">
+      <%= f.password_field :password, autocomplete: "off", class: 'input' %>
+      <span class="help is-success has-text-right">(leave blank if you don't want to change it)</span>
+    </p>
+
+    <%= f.label :password_confirmation, nil, class: 'label' %>
+    <p class="control has-icon has-icon-right">
+      <%= f.password_field :password_confirmation, autocomplete: "off", class: 'input' %>
+    </p>
+
+    <%= f.label :avatar, nil, class: 'label' %>
+    <p class="control has-icon has-icon-right">
+      <%= f.file_field :avatar %>
+      <% unless resource.avatar.blank? %>
+      <figure class="image">
+        <%= image_tag resource.avatar.url %>
+      </figure>
+      <% end %>
+    </p>
+    
+    <hr />
+    <%= f.label :current_password, nil, class: 'label' do %>
+    <i>(we need your current password to confirm your changes)</i>
+    <% end %>
+    <p class="control has-icon has-icon-right">
+      <%= f.password_field :current_password, autocomplete: "off", class: 'input is-danger' %>
+    </p>
+
+    <p class="has-text-right">
+      <%= f.submit "Update", class: "button is-primary" %>
+      <%= link_to "Cancel", root_path, class: "button is-warning" %>
+    </p>
+    <% end %>
+    
+    <hr />
+    <h5 class="title is-3 has-text-left">
+      <span>Unhappy?</span>
+      <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete, class: 'button is-danger', form_class: 'is-pulled-right' %>
+    </h5>
   </div>
-
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "off" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i><br />
-    <%= f.password_field :current_password, autocomplete: "off" %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Update" %>
-  </div>
-<% end %>
-
-<h3>Cancel my account</h3>
-
-<p>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete %></p>
-
-<%= link_to "Back", :back %>
+</div>

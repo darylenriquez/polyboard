@@ -54,10 +54,4 @@ Rails.application.configure do
   
   # ActionMailer configuration for devise:
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
-  
-  ENV['CLIENT_ID'] = "861263994713-0m01hsqo77rirdbm5hl5uj4lva21e6gt.apps.googleusercontent.com"
-  ENV['CLIENT_SECRET'] = "dKFrfK4rrw7XYrIe-ZFXzkMW"
-  
-  ENV['GOOGLE_CLIENT_ID'] = ENV['CLIENT_ID']
-  ENV['GOOGLE_CLIENT_SECRET'] = ENV['CLIENT_SECRET']
 end
