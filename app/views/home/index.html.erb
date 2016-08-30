@@ -14,7 +14,59 @@
 
     <p><strong>What are mailboxes?</strong> Mailboxes are simply categories. <strong>What can you do with a mailbox?</strong> Each mailbox can connect to multiple gmail accounts. In each account, all users can view emails.</p>
   </div>
-  <p><strong>Note:</strong> This system can connect gmail accounts and retrieve the first 100 emails only. It can also compose replies and download attchments.</p>
-  <p><strong>Note:</strong> Please make sure to set environment variables. Most importantly the CLIENT_ID and CLIENT_SECRET</p>
-  <p><strong>Note:</strong> Please make sure to also set the google development console the callback link.</p>
+  <br>
+  <div>
+    <h3 class="title is-4">This is how it looks like</h3>
+    <div>
+      <p>PolyBoard</p>
+      <ul class="tree">
+        <li>Mailbox
+          <ul>
+            <li>GMail Account
+              <ul>
+                <li>Emails</li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li>Another Mailbox
+          <ul>
+            <li>Another GMail Account
+              <ul>
+                <li>Emails</li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <hr />
+  <% unless @mailboxes.length.zero? %>
+  <div>
+    <h3 class="title is-4">This is all available records</h3>
+    <p>PolyBoard</p>
+    <ul class="tree">
+    <% @mailboxes.each do |mailbox| %>
+    <li><%= mailbox.name %>
+      <% unless mailbox.tokens.length.zero? %>
+      <ul>
+        <% mailbox.tokens.each do |token| %>
+        <li>
+          <%= token.email %>
+          <ul>
+            <li><%= link_to "view emails", mailbox_mail_path(mailbox_id: mailbox.id, id: token.id) %></li>
+            <li><%= link_to "create new email", compose_mailbox_mail_path(mailbox_id: mailbox.id, id: token.id) %></li>
+          </ul>
+        </li>
+        <% end %>
+      </ul>
+      <% end %>
+    </li>
+    <% end %>
+    </ul>
+  </div>
+  <% end %>
+  <br />
 </div>

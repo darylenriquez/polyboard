@@ -36,45 +36,11 @@
         </div>
 
         <div class="content">
-          <div>
-            <% if message.payload.parts.blank? %>
-            <% part_headers = headers_to_hash(message.payload.headers) %>
-            <% if part_headers["Content-Type"].starts_with?("text/html") %>
-            <% data = message.payload.body.data.force_encoding("utf-8") %>
-            <div class="yui3-cssreset">
-              <%= content_tag :iframe, nil, type: "text/html", srcdoc: "<base target='_blank'/>#{data}", class: "is-fullwidth" %>
-            </div>
-            <% elsif part_headers["Content-Type"].starts_with?("text/plain") %>
-            <div class="yui3-cssreset">
-              <%= sanitize message.payload.body.data.force_encoding("utf-8").gsub(/\n/, '<br/>'), tags: ["br"] %>
-            </div>
-            <% elsif part_headers["Content-Disposition"] && part_headers["Content-Disposition"].starts_with?("attachment") %>
 
-            <%= link_to download_mailbox_mail_path(id: @token.id, thread_id: params[:thread_id], m_id: message.id, f_id: message.payload.body.attachment_id, filename: (message.payload.filename || "no-name")), class: "tag is-primary is-medium" do %>
-            <i class="fa fa-download" aria-hidden="true"></i>&nbsp;<%= part.filename %>
-            <% end # END of link%>
+          <% form_parts(message).each do |type, data| %>
+          <%= render partial: "message_#{type}", locals: {message: message, data: data} %>
+          <% end # End each %>
 
-            <% end # END of if part_headers["Content-Type"].starts_with?("text/html")%>
-
-            <% else # The payload is separated by parts %>
-            <% message.payload.parts.each do |part| %>
-            <% part_headers = headers_to_hash(part.headers) %>
-            <% if part_headers["Content-Type"].starts_with?("text/html") %>
-            <% data = part.body.data.force_encoding("utf-8") %>
-            <div class="yui3-cssreset">
-              <%= content_tag :iframe, nil, type: "text/html", srcdoc: "<base target='_blank'/>#{data}", class: "is-fullwidth" %>
-            </div>
-            <% elsif part_headers["Content-Disposition"] && part_headers["Content-Disposition"].starts_with?("attachment") %>
-
-            <%= link_to download_mailbox_mail_path(id: @token.id, thread_id: params[:thread_id], m_id: message.id, f_id: part.body.attachment_id, filename: (part.filename || "no-name")), class: "tag is-primary is-medium" do %>
-            <i class="fa fa-download" aria-hidden="true"></i>&nbsp;<%= part.filename %>
-            <% end # END of link%>
-
-            <% end # END of if part_headers["Content-Type"].starts_with?("text/html")%>
-            <% end # END of loop%>
-            <% end # END of if%>
-          </div>
-          <br>
           <small><%= formatted_date_ago(headers["Date"]) %></small>
         </div>
       </div>
